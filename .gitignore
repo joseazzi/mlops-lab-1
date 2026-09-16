@@ -1,2 +1,6 @@
 /data
 .DS_Store
+
+mlflow.db
+mlflow.db-*
+mlruns/
