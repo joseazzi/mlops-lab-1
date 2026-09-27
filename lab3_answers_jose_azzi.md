@@ -1,4 +1,4 @@
-# Lab 3 Answers — Jose Azzi
+# Lab 3 Answers Jose Azzi
 
 ## Question 1
 
