@@ -4,3 +4,5 @@
 mlflow.db
 mlflow.db-*
 mlruns/
+
+__pycache__/
