@@ -18,15 +18,25 @@ To serve a newer model, I only need to move the champion alias to the new regist
  
 If I only modify a line in serve.py, Docker reuses the cached Python environment and dependencies. It only rebuilds the small layer that copies src, which makes rebuilding much faster.
  
-**5.** I compared the builder stage, which represents a naive image that retains the build tools, with the final multi-stage runtime image.
- 
-The builder/naive-style image had a content size of 444 MB, and the multi-stage runtime image 413 MB. That's a difference of 31 MB, approximately 7% smaller. Local disk usage was approximately 2.12 GB for the builder image and 1.98 GB for the runtime image.
- 
+**5.** I compared an image retaining the builder environment with the final multi-stage runtime image.
+
+Builder image content size: 444 MB
+
+Multi-stage runtime image content size: 413 MB
+
+Difference: 31 MB, approximately 7% smaller
+
+Local disk usage was approximately 2.12 GB for the builder image and 1.98 GB for the runtime image.
+
 The docker history output showed that the largest layer was the copied .venv, with an uncompressed size of approximately 1.41 GB. This layer is large because it contains PyTorch, MLflow, and the other Python dependencies.
+
+The multi-stage build is smaller because the final runtime image keeps only what is needed to run the application, while build tools and other unnecessary files remain in the builder stage.
  
 **6.** Without .dockerignore, Docker must send unnecessary files as part of the build context. This makes builds slower, uses more storage, reduces cache efficiency, and may accidentally include private or local files in the image.
- 
-Large folders such as data, mlruns, .git, and .venv would make the build context much larger. Sending them alone does not necessarily break the build, but copying the host .venv into the image could break the application because it may contain macOS or architecture-specific binaries. Local MLflow files could also introduce machine-specific paths and unnecessary state.
+
+Folders such as data, mlruns, .git, and .venv make the build context much larger. Simply sending them to the Docker daemon does not necessarily break the build. However, if they are copied into the image, the host .venv is particularly problematic because it may contain macOS or architecture-specific binaries that are incompatible with the Linux container.
+
+Local MLflow files can also introduce unnecessary machine-specific state and paths, while .git and data mainly increase the build context and image size without being needed at runtime.
  
 **7.** Inside a container, 127.0.0.1 refers to the container itself, not to the Mac host. Therefore, the container cannot use 127.0.0.1:5001 to reach the MLflow server running on the Mac.
  
