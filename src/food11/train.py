@@ -1,4 +1,5 @@
 import argparse
+import os
 from pathlib import Path
 
 import mlflow
@@ -70,7 +71,7 @@ def main():
     if not (train_data.classes == val_data.classes == test_data.classes):
         raise ValueError("The class folders differ between data splits.")
 
-    mlflow.set_tracking_uri("http://127.0.0.1:5001")
+    mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI", "http://127.0.0.1:5001"))
     mlflow.set_experiment("food11")
 
     with mlflow.start_run() as run:
