@@ -2,8 +2,9 @@ import argparse
 import hashlib
 from pathlib import Path
 
-from data import CLASSES
 from PIL import Image, UnidentifiedImageError
+
+from src.food11.data import CLASSES
 
 SPLITS = ("training", "validation", "evaluation")
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
