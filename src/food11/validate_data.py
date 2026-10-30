@@ -4,7 +4,7 @@ from pathlib import Path
 
 from PIL import Image, UnidentifiedImageError
 
-from data import CLASSES
+from src.food11.data import CLASSES
 
 SPLITS = ("training", "validation", "evaluation")
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
